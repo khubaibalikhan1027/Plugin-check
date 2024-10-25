@@ -645,10 +645,6 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 	final public function set_slug( $slug ) {
 		if ( ! empty( $slug ) ) {
 			$this->slug = $slug;
-		} else {
-			$basename = $this->get_plugin_basename();
-
-			$this->slug = ( '.' === pathinfo( $basename, PATHINFO_DIRNAME ) ) ? $basename : dirname( $basename );
 		}
 	}
 

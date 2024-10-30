@@ -611,3 +611,25 @@ Feature: Test that the WP-CLI command works.
 	  """
 	  Success: Checks complete. No errors found.
 	  """
+
+  Scenario: Check for missing license in single file plugin
+    Given a WP install with the Plugin Check plugin
+    And a wp-content/plugins/foo-single.php file:
+      """
+      <?php
+      /**
+       * Plugin Name: Foo Single
+       * Plugin URI: https://foo-single.com
+       * Description: Custom plugin.
+       * Version: 0.1.0
+       * Author: WordPress Performance Team
+       * Author URI: https://make.wordpress.org/performance/
+       */
+
+      """
+
+    When I run the WP-CLI command `plugin check foo-single.php`
+    Then STDOUT should contain:
+      """
+      plugin_header_no_license
+      """

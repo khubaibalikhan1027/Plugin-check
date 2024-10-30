@@ -10,19 +10,24 @@ namespace WordPress\Plugin_Check\Checker\Checks\Plugin_Repo;
 use Exception;
 use WordPress\Plugin_Check\Checker\Check_Categories;
 use WordPress\Plugin_Check\Checker\Check_Result;
-use WordPress\Plugin_Check\Checker\Static_Check;
+use WordPress\Plugin_Check\Checker\Checks\Abstract_File_Check;
 use WordPress\Plugin_Check\Traits\Amend_Check_Result;
+use WordPress\Plugin_Check\Traits\Find_Readme;
+use WordPress\Plugin_Check\Traits\License_Utils;
 use WordPress\Plugin_Check\Traits\Stable_Check;
+use WordPressdotorg\Plugin_Directory\Readme\Parser;
 
 /**
  * Check for plugin header fields.
  *
  * @since 1.2.0
  */
-class Plugin_Header_Fields_Check implements Static_Check {
+class Plugin_Header_Fields_Check extends Abstract_File_Check {
 
 	use Amend_Check_Result;
 	use Stable_Check;
+	use License_Utils;
+	use Find_Readme;
 
 	/**
 	 * Gets the categories for the check.
@@ -43,6 +48,7 @@ class Plugin_Header_Fields_Check implements Static_Check {
 	 * @since 1.2.0
 	 *
 	 * @param Check_Result $result The check result to amend, including the plugin context to check.
+	 * @param array        $files  Array of plugin files.
 	 *
 	 * @throws Exception Thrown when the check fails with a critical error (unrelated to any errors detected as part of the check).
 	 *
@@ -50,7 +56,7 @@ class Plugin_Header_Fields_Check implements Static_Check {
 	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 */
-	public function run( Check_Result $result ) {
+	public function check_files( Check_Result $result, array $files ) {
 		$plugin_main_file = $result->plugin()->main_file();
 
 		$labels = array(
@@ -67,6 +73,8 @@ class Plugin_Header_Fields_Check implements Static_Check {
 			'RequiresPHP'     => 'Requires PHP',
 			'UpdateURI'       => 'Update URI',
 			'RequiresPlugins' => 'Requires Plugins',
+			'License'         => 'License',
+			'LicenseURI'      => 'License URI',
 		);
 
 		$restricted_labels = array(
@@ -246,6 +254,59 @@ class Plugin_Header_Fields_Check implements Static_Check {
 					'',
 					6
 				);
+			}
+		}
+
+		if ( empty( $plugin_header['License'] ) ) {
+			$this->add_result_error_for_file(
+				$result,
+				__( '<strong>Your plugin has no license declared in Plugin Header.</strong><br>Please update your plugin header with a GPLv2 (or later) compatible license. It is necessary to declare the license of this plugin. You can do this by using the fields available both in the plugin readme and in the plugin headers.', 'plugin-check' ),
+				'plugin_header_no_license',
+				$plugin_main_file,
+				0,
+				0,
+				'https://developer.wordpress.org/plugins/wordpress-org/common-issues/#no-gpl-compatible-license-declared',
+				9
+			);
+		} else {
+			$plugin_license = $this->get_normalized_license( $plugin_header['License'] );
+
+			if ( ! $this->is_gpl_compatible_license( $plugin_license ) ) {
+				$this->add_result_error_for_file(
+					$result,
+					__( '<strong>Your plugin has an invalid license declared in Plugin Header.</strong><br>Please update your readme with a valid GPL license identifier. It is necessary to declare the license of this plugin. You can do this by using the fields available both in the plugin readme and in the plugin headers.', 'plugin-check' ),
+					'plugin_header_invalid_license',
+					$plugin_main_file,
+					0,
+					0,
+					'https://developer.wordpress.org/plugins/wordpress-org/common-issues/#no-gpl-compatible-license-declared',
+					9
+				);
+			}
+
+			if ( ! $result->plugin()->is_single_file_plugin() ) {
+				$readme = $this->filter_files_for_readme( $files, $result->plugin()->path() );
+
+				if ( ! empty( $readme ) ) {
+					$readme_file = reset( $readme );
+
+					$parser = new Parser( $readme_file );
+
+					$readme_license = $parser->license;
+
+					if ( ! empty( $readme_license ) && $plugin_license !== $readme_license ) {
+						$this->add_result_warning_for_file(
+							$result,
+							__( '<strong>Your plugin has a different license declared in the readme file and plugin header.</strong><br>Please update your readme with a valid GPL license identifier.', 'plugin-check' ),
+							'license_mismatch',
+							$plugin_main_file,
+							0,
+							0,
+							'https://developer.wordpress.org/plugins/wordpress-org/common-issues/#declared-license-mismatched',
+							9
+						);
+					}
+				}
 			}
 		}
 

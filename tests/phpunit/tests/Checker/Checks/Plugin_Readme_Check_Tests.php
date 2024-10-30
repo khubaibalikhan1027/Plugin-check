@@ -157,9 +157,6 @@ class Plugin_Readme_Check_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 0, $warnings['readme.txt'] );
 		$this->assertArrayHasKey( 0, $warnings['readme.txt'][0] );
 		$this->assertCount( 1, wp_list_filter( $warnings['readme.txt'][0][0], array( 'code' => 'invalid_license' ) ) );
-
-		// Check for not same license warning.
-		$this->assertCount( 1, wp_list_filter( $warnings['readme.txt'][0][0], array( 'code' => 'license_mismatch' ) ) );
 	}
 
 	public function test_run_with_errors_no_license() {
@@ -178,6 +175,21 @@ class Plugin_Readme_Check_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 0, $errors['readme.txt'] );
 		$this->assertArrayHasKey( 0, $errors['readme.txt'][0] );
 		$this->assertCount( 1, wp_list_filter( $errors['readme.txt'][0][0], array( 'code' => 'no_license' ) ) );
+	}
+
+	public function test_run_with_errors_invalid_license() {
+		$readme_check  = new Plugin_Readme_Check();
+		$check_context = new Check_Context( UNIT_TESTS_PLUGIN_DIR . 'test-plugin-plugin-readme-errors-invalid-license/load.php' );
+		$check_result  = new Check_Result( $check_context );
+
+		$readme_check->run( $check_result );
+
+		$warnings = $check_result->get_warnings();
+
+		$this->assertNotEmpty( $warnings );
+		$this->assertArrayHasKey( 'readme.txt', $warnings );
+
+		$this->assertCount( 1, wp_list_filter( $warnings['readme.txt'][0][0], array( 'code' => 'invalid_license' ) ) );
 	}
 
 	public function test_run_with_errors_tested_upto() {
@@ -219,7 +231,6 @@ class Plugin_Readme_Check_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'readme.md', $warnings );
 
 		$this->assertCount( 1, wp_list_filter( $warnings['readme.md'][0][0], array( 'code' => 'invalid_license' ) ) );
-		$this->assertCount( 1, wp_list_filter( $warnings['readme.md'][0][0], array( 'code' => 'license_mismatch' ) ) );
 		$this->assertCount( 1, wp_list_filter( $warnings['readme.md'][0][0], array( 'code' => 'mismatched_plugin_name' ) ) );
 		$this->assertCount( 1, wp_list_filter( $warnings['readme.md'][0][0], array( 'code' => 'readme_invalid_contributors' ) ) );
 	}

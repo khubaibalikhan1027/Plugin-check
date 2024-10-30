@@ -81,7 +81,7 @@ trait License_Utils {
 	 * @return bool true if the license is GPL compatible, otherwise false.
 	 */
 	protected function is_gpl_compatible_license( $license ) {
-		$match = preg_match( '/GPL|GNU|MIT|FreeBSD|New BSD|BSD-3-Clause|BSD 3 Clause|OpenLDAP|Expat|Apache/im', $license );
+		$match = preg_match( '/GPL|GNU|MIT|FreeBSD|New BSD|BSD-3-Clause|BSD 3 Clause|OpenLDAP|Expat|Apache|MPL20/im', $license );
 
 		return ( false === $match || 0 === $match ) ? false : true;
 	}

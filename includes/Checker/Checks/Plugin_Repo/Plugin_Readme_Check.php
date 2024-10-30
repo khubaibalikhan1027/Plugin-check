@@ -327,6 +327,22 @@ class Plugin_Readme_Check extends Abstract_File_Check {
 			$this->add_result_warning_for_file(
 				$result,
 				__( '<strong>Your plugin has an invalid license declared.</strong><br>Please update your readme with a valid SPDX license identifier.', 'plugin-check' ),
+				'invalid_license_identifier',
+				$readme_file,
+				0,
+				0,
+				'https://developer.wordpress.org/plugins/wordpress-org/common-issues/#no-gpl-compatible-license-declared',
+				9
+			);
+
+			return;
+		}
+
+		// Test for a valid GPL compatible license.
+		if ( ! $this->is_gpl_compatible_license( $license ) ) {
+			$this->add_result_warning_for_file(
+				$result,
+				__( '<strong>Your plugin has an invalid license declared.</strong><br>Please update your readme with a valid GPL compatible license identifier.', 'plugin-check' ),
 				'invalid_license',
 				$readme_file,
 				0,

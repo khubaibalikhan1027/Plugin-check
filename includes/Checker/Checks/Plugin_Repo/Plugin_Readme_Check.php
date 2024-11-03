@@ -104,6 +104,9 @@ class Plugin_Readme_Check extends Abstract_File_Check {
 
 		// Check the readme file for contributors.
 		$this->check_for_contributors( $result, $readme_file );
+
+		// Check for third parties privacy notes.
+		$this->check_for_privacy_notes( $result, $readme_file, $parser );
 	}
 
 	/**
@@ -714,6 +717,18 @@ class Plugin_Readme_Check extends Abstract_File_Check {
 				6
 			);
 		}
+	}
+
+	/**
+	 * Checks the readme file for contributors.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param Check_Result $result      The Check Result to amend.
+	 * @param string       $readme_file Readme file.
+	 */
+	private function check_for_privacy_notes( Check_Result $result, string $readme_file, Parser $parser ) {
+		
 	}
 
 	/**

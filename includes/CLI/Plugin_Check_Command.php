@@ -113,6 +113,9 @@ final class Plugin_Check_Command {
 	 *
 	 * [--slug=<slug>]
 	 * : Slug to override the default.
+	 * 
+	 * [--user_owner=<user>,<email>]
+	 * : User to override the default.
 	 *
 	 * ## EXAMPLES
 	 *
@@ -147,6 +150,7 @@ final class Plugin_Check_Command {
 				'error-severity'       => '',
 				'warning-severity'     => '',
 				'slug'                 => '',
+				'user_owner'           => '',
 			)
 		);
 
@@ -196,6 +200,7 @@ final class Plugin_Check_Command {
 			$runner->set_plugin( $plugin );
 			$runner->set_categories( $categories );
 			$runner->set_slug( $options['slug'] );
+			$runner->set_user_owner( $options['user_owner'] );
 		} catch ( Exception $error ) {
 			WP_CLI::error( $error->getMessage() );
 		}

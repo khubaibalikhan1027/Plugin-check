@@ -128,6 +128,13 @@ class Plugin_Header_Fields_Check implements Static_Check {
 			}
 		}
 
+		// Authors URI information.
+		$author_uri = ! empty( $plugin_header['AuthorURI'] ) ? $plugin_header['AuthorURI'] : '';
+		$author_uri = ! empty( $author_uri ) && ! empty( $plugin_header['PluginURI'] ) ? $plugin_header['PluginURI'] : '';
+		if ( ! empty( $author_uri ) ) {
+			$owner_user = $result->plugin()->get_owner_user();
+		}
+
 		if ( ! empty( $plugin_header['Description'] ) ) {
 			if (
 				str_contains( $plugin_header['Description'], 'This is a short description of what the plugin does' )

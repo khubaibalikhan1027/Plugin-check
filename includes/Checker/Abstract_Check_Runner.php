@@ -47,6 +47,14 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 	protected $slug;
 
 	/**
+	 * The plugin user.
+	 *
+	 * @since 1.3.0
+	 * @var string
+	 */
+	protected $user_owner;
+
+	/**
 	 * The check slugs to exclude.
 	 *
 	 * @since 1.0.0
@@ -633,6 +641,21 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 		return $this->get_slug_param();
 	}
 
+	/**
+	 * Returns plugin user owner.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string Plugin user owner.
+	 */
+	final protected function get_user_owner() {
+		if ( null !== $this->user_owner ) {
+			return $this->user_owner;
+		}
+
+		return '';
+	}
+
 	/** Gets the Check_Context for the plugin.
 	 *
 	 * @since 1.0.0
@@ -659,6 +682,21 @@ abstract class Abstract_Check_Runner implements Check_Runner {
 			$basename = $this->get_plugin_basename();
 
 			$this->slug = ( '.' === pathinfo( $basename, PATHINFO_DIRNAME ) ) ? $basename : dirname( $basename );
+		}
+	}
+
+	/**
+	 * Sets the plugin user owner.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $user Plugin owner and its email.
+	 */
+	final public function set_user_owner( $user_owner ) {
+		if ( ! empty( $user ) ) {
+			$this->user_owner = $user_owner;
+		} else {
+			$this->user_owner = '';
 		}
 	}
 

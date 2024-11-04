@@ -128,9 +128,9 @@ class Plugin_Context {
 	 */
 	public function path( $relative_path = '/' ) {
 		if ( is_dir( $this->main_file ) ) {
-			return trailingslashit( $this->main_file ) . ltrim( $relative_path, '/' );
+			return  $this->main_file . '/' . ltrim( $relative_path, '/' );
 		} else {
-			return trailingslashit( dirname( $this->main_file ) ) . ltrim( $relative_path, '/' );
+			return dirname( $this->main_file ) . '/' . ltrim( $relative_path, '/' );
 		}
 	}
 

@@ -57,4 +57,49 @@ class Plugin_Header_Fields_Check_Tests extends WP_UnitTestCase {
 			$this->assertCount( 0, wp_list_filter( $warnings['load.php'][0][0], array( 'code' => 'plugin_header_invalid_requires_plugins' ) ) );
 		}
 	}
+
+	public function test_run_with_errors_no_license() {
+		$check         = new Plugin_Header_Fields_Check();
+		$check_context = new Check_Context( UNIT_TESTS_PLUGIN_DIR . 'test-plugin-plugin-readme-errors-no-license/load.php' );
+		$check_result  = new Check_Result( $check_context );
+
+		$check->run( $check_result );
+
+		$errors = $check_result->get_errors();
+
+		$this->assertNotEmpty( $errors );
+		$this->assertArrayHasKey( 'load.php', $errors );
+
+		$this->assertCount( 1, wp_list_filter( $errors['load.php'][0][0], array( 'code' => 'plugin_header_no_license' ) ) );
+	}
+
+	public function test_run_with_errors_mismatched_license() {
+		$check         = new Plugin_Header_Fields_Check();
+		$check_context = new Check_Context( UNIT_TESTS_PLUGIN_DIR . 'test-plugin-plugin-readme-errors-license/load.php' );
+		$check_result  = new Check_Result( $check_context );
+
+		$check->run( $check_result );
+
+		$warnings = $check_result->get_warnings();
+
+		$this->assertNotEmpty( $warnings );
+		$this->assertArrayHasKey( 'load.php', $warnings );
+
+		$this->assertCount( 1, wp_list_filter( $warnings['load.php'][0][0], array( 'code' => 'license_mismatch' ) ) );
+	}
+
+	public function test_run_with_errors_invalid_license() {
+		$check         = new Plugin_Header_Fields_Check();
+		$check_context = new Check_Context( UNIT_TESTS_PLUGIN_DIR . 'test-plugin-plugin-readme-errors-invalid-license/load.php' );
+		$check_result  = new Check_Result( $check_context );
+
+		$check->run( $check_result );
+
+		$errors = $check_result->get_errors();
+
+		$this->assertNotEmpty( $errors );
+		$this->assertArrayHasKey( 'load.php', $errors );
+
+		$this->assertCount( 1, wp_list_filter( $errors['load.php'][0][0], array( 'code' => 'plugin_header_invalid_license' ) ) );
+	}
 }

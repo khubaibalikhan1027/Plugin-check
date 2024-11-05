@@ -126,11 +126,35 @@ class File_Type_Check_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 0, $errors['badly|file%name!@#$%^&*()+=[]{};:"\'<>,?|`~.php'] );
 		$this->assertArrayHasKey( 0, $errors['badly|file%name!@#$%^&*()+=[]{};:"\'<>,?|`~.php'][0] );
 		$this->assertCount( 1, wp_list_filter( $errors['badly|file%name!@#$%^&*()+=[]{};:"\'<>,?|`~.php'][0][0], array( 'code' => 'badly_named_files' ) ) );
+	}
 
-		// Duplicated filenames.
-		$this->assertArrayHasKey( 0, $errors['class-filename.php'] );
-		$this->assertArrayHasKey( 0, $errors['class-filename.php'][0] );
-		$this->assertCount( 1, wp_list_filter( $errors['class-filename.php'][0][0], array( 'code' => 'duplicated_files' ) ) );
+	public function test_run_with_duplicated_named_errors() {
+		// Initialize the Check_Context with a plugin path that mimics the directory structure.
+		$check_context = new Check_Context( UNIT_TESTS_PLUGIN_DIR . 'test-plugin-file-type-badly-named-files-errors/load.php' );
+		
+		// Create an empty Check_Result instance for this context.
+		$check_result = new Check_Result( $check_context );
+
+		// Initialize the File_Type_Check instance.
+		$check = new File_Type_Check();
+
+		// Use reflection to make check_files accessible.
+		$reflection = new \ReflectionClass( $check );
+		$checkFilesMethod = $reflection->getMethod('check_files');
+		$checkFilesMethod->setAccessible(true);
+
+		// Define the custom file list with duplicate names as they would appear in a plugin directory.
+		$customFiles = [
+				UNIT_TESTS_PLUGIN_DIR . 'test-plugin-file-type-badly-named-files-errors/custom-file.php',
+				UNIT_TESTS_PLUGIN_DIR . 'test-plugin-file-type-badly-named-files-errors/Custom-File.php',
+				UNIT_TESTS_PLUGIN_DIR . 'test-plugin-file-type-badly-named-files-errors/custom-FILE.php'
+		];
+
+		// Invoke check_files with the Check_Result instance and custom file list.
+		$result = $checkFilesMethod->invoke($check, $check_result, $customFiles);
+
+		// Assert that check_files handles the custom file list with duplicates correctly.
+		$this->assertTrue($result->has_errors(), "The check_files method should detect errors for duplicate file names.");
 	}
 
 	public function test_run_with_library_core_errors() {

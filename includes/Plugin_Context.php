@@ -81,7 +81,7 @@ class Plugin_Context {
 		if ( ! empty( $slug ) ) {
 			$this->slug = $slug;
 		} else {
-			$this->slug = $this->is_single_file_plugin() ? basename( $this->main_file, '.php' ) : basename( dirname( $this->main_file ) );
+			$this->slug = basename( dirname( $this->main_file ), '.php' );
 		}
 	}
 

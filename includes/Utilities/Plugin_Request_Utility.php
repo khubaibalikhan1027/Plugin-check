@@ -94,7 +94,7 @@ class Plugin_Request_Utility {
 		$plugin_slug = '';
 
 		if ( false !== strpos( $plugin_url, '#wporgapi:' ) ) {
-			$plugin_url  = substr( $plugin_url, 0, strpos( $plugin_url, '#' ) );
+			$plugin_url = substr( $plugin_url, 0, strpos( $plugin_url, '#' ) );
 		}
 		$plugin_slug = basename( $plugin_url );
 		$plugin_slug = str_replace( '.zip', '', $plugin_slug );

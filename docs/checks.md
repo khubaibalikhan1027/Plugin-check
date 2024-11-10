@@ -29,8 +29,10 @@
 
 ## Results related from the checks
 
-### Code obfuscation ( code_obfuscation )
+### Code obfuscation ( obfuscated_code_detected )
 
-| Issue | Severity | Description | Documentation |
+| Type | Severity | Description | Documentation |
 | --- | --- | --- | --- |
-| obfuscated_code_detected | 7 | Zend Guard Obfuscation | [Learn more](https://developer.wordpress.org/plugins/wordpress-org/common-issues/#gpl-no-publicly-documented-resource)
+| error | 7 | Zend Guard Obfuscation | [Learn more](https://developer.wordpress.org/plugins/wordpress-org/common-issues/#gpl-no-publicly-documented-resource) |
+| error | 7 | Zend Guard Obfuscation | [Learn more](https://developer.wordpress.org/plugins/wordpress-org/common-issues/#gpl-no-publicly-documented-resource) |
+| error | 7 | IonCube Obfuscation | [Learn more](https://developer.wordpress.org/plugins/wordpress-org/common-issues/#gpl-no-publicly-documented-resource) |

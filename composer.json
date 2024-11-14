@@ -6,12 +6,13 @@
   "require": {
     "php": ">=7.2.24",
     "ext-json": "*",
-    "afragen/wordpress-plugin-readme-parser": "dev-master#67fba498d0b112acf84386b95e4905c539a33f0b",
+    "afragen/wordpress-plugin-readme-parser": "dev-master#c3758599348148be684b3c4ad1105d09b6230d51",
     "automattic/vipwpcs": "^3.0.0",
     "composer/installers": "^2.2",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
     "plugin-check/phpcs-sniffs": "@dev",
-    "wp-coding-standards/wpcs": "^3.1.0"
+    "wp-coding-standards/wpcs": "^3.1.0",
+    "cweagans/composer-patches": "^1.7"
   },
   "require-dev": {
     "phpcompatibility/php-compatibility": "^9.3",
@@ -51,13 +52,21 @@
   "config": {
     "allow-plugins": {
       "composer/installers": true,
-      "cweagans/composer-patches": false,
       "dealerdirect/phpcodesniffer-composer-installer": true,
-      "phpstan/extension-installer": true
+      "phpstan/extension-installer": true,
+      "cweagans/composer-patches": true
     },
     "platform": {
       "php": "7.2.24"
     }
+  },
+  "extra": {
+      "composer-exit-on-patch-failure": true,
+      "patches": {
+          "afragen/wordpress-plugin-readme-parser": {
+            "fix readme parser":"patches/readme-parser.patch"
+          }
+      }
   },
   "scripts": {
     "behat": "BEHAT_FEATURES_FOLDER=tests/behat/features run-behat-tests",

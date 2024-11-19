@@ -100,7 +100,7 @@ jobs:
 
       - name: Upload code coverage report
         if: ${{ matrix.coverage }}
-        uses: codecov/codecov-action@68708a9f7a6b6b5fe33673f782f93725c5eff3c6
+        uses: codecov/codecov-action@21f471b0905adf9afb82e8232973e06159c478e3
         with:
           file: build/logs/*.xml
           flags: unit
@@ -146,7 +146,7 @@ jobs:
 
       - name: Upload code coverage report
         if: ${{ matrix.coverage }}
-        uses: codecov/codecov-action@68708a9f7a6b6b5fe33673f782f93725c5eff3c6
+        uses: codecov/codecov-action@21f471b0905adf9afb82e8232973e06159c478e3
         with:
           file: build/logs/*.xml
           flags: phpcs-sniffs
